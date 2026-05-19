@@ -1,0 +1,122 @@
+{
+  "activities": [
+    {
+      "activityId": "1001",
+      "activityName": "Morning Tempo",
+      "activityType": "running",
+      "startTimeLocal": "2026-05-01T06:30:00",
+      "distance": 10000,
+      "duration": 2820,
+      "avgHR": 158,
+      "maxHR": 172,
+      "averageCadence": 178,
+      "averagePace": 282,
+      "elevationGain": 45,
+      "trainingEffect": 3.8,
+      "avgTemperature": 14,
+      "vo2Max": 48.2,
+      "splits": [
+        {"distance": 1609, "duration": 430, "averageHR": 152, "averageCadence": 176, "averagePace": 267},
+        {"distance": 1609, "duration": 445, "averageHR": 158, "averageCadence": 178, "averagePace": 276},
+        {"distance": 1609, "duration": 450, "averageHR": 162, "averageCadence": 179, "averagePace": 279},
+        {"distance": 1609, "duration": 460, "averageHR": 165, "averageCadence": 177, "averagePace": 285},
+        {"distance": 1609, "duration": 475, "averageHR": 168, "averageCadence": 176, "averagePace": 295},
+        {"distance": 1609, "duration": 490, "averageHR": 170, "averageCadence": 175, "averagePace": 304}
+      ]
+    },
+    {
+      "activityId": "1002",
+      "activityName": "Easy Recovery",
+      "activityType": "running",
+      "startTimeLocal": "2026-05-03T07:00:00",
+      "distance": 8000,
+      "duration": 2880,
+      "avgHR": 132,
+      "maxHR": 145,
+      "averageCadence": 172,
+      "averagePace": 360,
+      "avgTemperature": 16,
+      "trainingEffect": 2.1
+    },
+    {
+      "activityId": "1003",
+      "activityName": "Long Run",
+      "activityType": "running",
+      "startTimeLocal": "2026-05-05T07:15:00",
+      "distance": 21000,
+      "duration": 7200,
+      "avgHR": 148,
+      "maxHR": 165,
+      "averageCadence": 174,
+      "averagePace": 343,
+      "avgTemperature": 12,
+      "trainingEffect": 4.2,
+      "splits": [
+        {"distance": 1609, "duration": 520, "averageHR": 140, "averageCadence": 173, "averagePace": 323},
+        {"distance": 1609, "duration": 530, "averageHR": 145, "averageCadence": 174, "averagePace": 329},
+        {"distance": 1609, "duration": 535, "averageHR": 148, "averageCadence": 174, "averagePace": 332},
+        {"distance": 1609, "duration": 545, "averageHR": 150, "averageCadence": 175, "averagePace": 338},
+        {"distance": 1609, "duration": 555, "averageHR": 152, "averageCadence": 174, "averagePace": 344},
+        {"distance": 1609, "duration": 565, "averageHR": 155, "averageCadence": 173, "averagePace": 351},
+        {"distance": 1609, "duration": 580, "averageHR": 158, "averageCadence": 172, "averagePace": 360},
+        {"distance": 1609, "duration": 590, "averageHR": 160, "averageCadence": 171, "averagePace": 366}
+      ]
+    },
+    {
+      "activityId": "1004",
+      "activityName": "Track Intervals",
+      "activityType": "running",
+      "startTimeLocal": "2026-05-08T17:30:00",
+      "distance": 9000,
+      "duration": 2700,
+      "avgHR": 165,
+      "maxHR": 182,
+      "averageCadence": 182,
+      "averagePace": 300,
+      "avgTemperature": 22,
+      "trainingEffect": 4.5
+    },
+    {
+      "activityId": "1005",
+      "activityName": "PR 5K",
+      "activityType": "running",
+      "startTimeLocal": "2026-05-10T08:00:00",
+      "distance": 5000,
+      "duration": 1140,
+      "avgHR": 172,
+      "maxHR": 188,
+      "averageCadence": 186,
+      "averagePace": 228,
+      "avgTemperature": 15,
+      "trainingEffect": 4.8,
+      "vo2Max": 49.1
+    },
+    {
+      "activityId": "1006",
+      "activityName": "Hot Afternoon Run",
+      "activityType": "running",
+      "startTimeLocal": "2026-05-12T16:00:00",
+      "distance": 8000,
+      "duration": 2720,
+      "avgHR": 155,
+      "averageCadence": 170,
+      "averagePace": 340,
+      "avgTemperature": 28,
+      "trainingEffect": 3.0
+    }
+  ],
+  "dailySummaries": [
+    {"calendarDate": "2026-05-01", "restingHeartRate": 48, "hrv": 62, "sleepTimeSeconds": 27000, "averageStressLevel": 28},
+    {"calendarDate": "2026-05-02", "restingHeartRate": 47, "hrv": 65, "sleepTimeSeconds": 28800, "averageStressLevel": 22},
+    {"calendarDate": "2026-05-03", "restingHeartRate": 49, "hrv": 58, "sleepTimeSeconds": 25200, "averageStressLevel": 35},
+    {"calendarDate": "2026-05-04", "restingHeartRate": 48, "hrv": 60, "sleepTimeSeconds": 27600, "averageStressLevel": 30},
+    {"calendarDate": "2026-05-05", "restingHeartRate": 50, "hrv": 55, "sleepTimeSeconds": 26400, "averageStressLevel": 38},
+    {"calendarDate": "2026-05-06", "restingHeartRate": 52, "hrv": 50, "sleepTimeSeconds": 23400, "averageStressLevel": 42},
+    {"calendarDate": "2026-05-07", "restingHeartRate": 51, "hrv": 52, "sleepTimeSeconds": 27000, "averageStressLevel": 36},
+    {"calendarDate": "2026-05-08", "restingHeartRate": 49, "hrv": 57, "sleepTimeSeconds": 28200, "averageStressLevel": 32},
+    {"calendarDate": "2026-05-09", "restingHeartRate": 48, "hrv": 61, "sleepTimeSeconds": 29100, "averageStressLevel": 25},
+    {"calendarDate": "2026-05-10", "restingHeartRate": 47, "hrv": 64, "sleepTimeSeconds": 28800, "averageStressLevel": 20},
+    {"calendarDate": "2026-05-11", "restingHeartRate": 54, "hrv": 48, "sleepTimeSeconds": 21600, "averageStressLevel": 48},
+    {"calendarDate": "2026-05-12", "restingHeartRate": 53, "hrv": 49, "sleepTimeSeconds": 25200, "averageStressLevel": 44}
+  ]
+}
