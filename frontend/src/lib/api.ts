@@ -69,6 +69,35 @@ export interface CoachingReportData {
   forecast?: string;
 }
 
+export interface PerformanceActivity {
+  id: number;
+  name: string;
+  started_at: string;
+  distance_m: number | null;
+  duration_s: number | null;
+  pace_s_per_km: number;
+}
+
+export interface PerformanceMark {
+  distance_key: string;
+  distance_label: string;
+  seconds: number;
+  formatted_time: string;
+  pace_s_per_km: number;
+  method: string;
+  activity?: PerformanceActivity;
+  source_activity?: PerformanceActivity;
+}
+
+export interface PerformanceData {
+  personal_bests: PerformanceMark[];
+  race_projections: PerformanceMark[];
+  fastest_run: PerformanceActivity | null;
+  longest_run: PerformanceActivity | null;
+  projection_source: PerformanceActivity | null;
+  summary: string;
+}
+
 export interface FatiguePoint {
   date: string;
   score: number;
@@ -132,6 +161,10 @@ export function getTrends() {
 export function getCoachingReport(activityId?: number) {
   const q = activityId ? `?activity_id=${activityId}` : "";
   return fetchApi<CoachingReportData>(`/api/v1/analytics/coaching-report${q}`);
+}
+
+export function getPerformance() {
+  return fetchApi<PerformanceData>("/api/v1/analytics/performance");
 }
 
 export function getFatigue() {
