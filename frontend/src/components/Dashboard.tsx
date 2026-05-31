@@ -7,11 +7,13 @@ import {
   getPatterns,
   getInsights,
   getTrends,
+  getReadiness,
   type DashboardStats,
   type FatigueData,
   type Pattern,
   type Insight,
   type TrendsData,
+  type ReadinessData,
 } from "@/lib/api";
 import { StatCard } from "./StatCard";
 import { FatigueChart } from "./FatigueChart";
@@ -19,6 +21,7 @@ import { PatternCard } from "./PatternCard";
 import { CoachingReport } from "./CoachingReport";
 import { VolumeChart } from "./VolumeChart";
 import { PaceTrendChart, PaceTrendLinks } from "./PaceTrendChart";
+import { ReadinessCard } from "./ReadinessCard";
 import { WellnessChart } from "./WellnessChart";
 import { riskColor } from "@/lib/utils";
 
@@ -28,6 +31,7 @@ export function Dashboard() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
   const [trends, setTrends] = useState<TrendsData | null>(null);
+  const [readiness, setReadiness] = useState<ReadinessData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,13 +41,15 @@ export function Dashboard() {
       getPatterns(),
       getInsights(),
       getTrends(),
+      getReadiness(),
     ])
-      .then(([s, f, p, i, t]) => {
+      .then(([s, f, p, i, t, r]) => {
         setStats(s);
         setFatigue(f);
         setPatterns(p.filter((x) => x.pattern_type !== "insufficient_data"));
         setInsights(i.slice(0, 3));
         setTrends(t);
+        setReadiness(r);
       })
       .catch((e) => setError(e.message));
   }, []);
@@ -95,6 +101,8 @@ export function Dashboard() {
         />
         <StatCard label="Insights" value={String(stats.recent_insights)} />
       </div>
+
+      {readiness && <ReadinessCard readiness={readiness} />}
 
       {stats.total_activities > 0 && (
         <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">

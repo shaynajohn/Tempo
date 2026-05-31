@@ -98,6 +98,32 @@ export interface PerformanceData {
   summary: string;
 }
 
+export interface ReadinessFactor {
+  label: string;
+  impact: "positive" | "negative" | "neutral";
+  detail: string;
+}
+
+export interface ReadinessData {
+  score: number;
+  level: "high" | "moderate" | "low" | "unknown";
+  recommendation: string;
+  factors: ReadinessFactor[];
+  latest_metric_date: string | null;
+  metrics: {
+    resting_hr?: number | null;
+    sleep_hours?: number | null;
+    sleep_score?: number | null;
+    stress_avg?: number | null;
+    body_battery?: number | null;
+  };
+  training: {
+    last_7_days_km?: number;
+    baseline_weekly_km?: number;
+    days_since_run?: number | null;
+  };
+}
+
 export interface FatiguePoint {
   date: string;
   score: number;
@@ -165,6 +191,10 @@ export function getCoachingReport(activityId?: number) {
 
 export function getPerformance() {
   return fetchApi<PerformanceData>("/api/v1/analytics/performance");
+}
+
+export function getReadiness() {
+  return fetchApi<ReadinessData>("/api/v1/analytics/readiness");
 }
 
 export function getFatigue() {

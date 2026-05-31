@@ -8,6 +8,7 @@ from app.ai.agents.graph import run_coaching_pipeline
 from app.analytics.fatigue import compute_fatigue
 from app.analytics.patterns import discover_patterns
 from app.analytics.performance import compute_performance
+from app.analytics.readiness import compute_readiness
 from app.analytics.trends import compute_trends
 from app.db.session import get_db
 from app.models.activity import Activity
@@ -55,6 +56,11 @@ async def trends(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
 @router.get("/performance")
 async def performance(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
     return await compute_performance(db)
+
+
+@router.get("/readiness")
+async def readiness(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
+    return await compute_readiness(db)
 
 
 @router.get("/coaching-report")
