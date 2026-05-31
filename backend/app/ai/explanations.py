@@ -11,6 +11,8 @@ from app.config import settings
 from app.models.activity import Activity
 from app.models.insight import Insight
 
+METERS_PER_MILE = 1609.344
+
 
 SYSTEM_PROMPT = """You are Tempo, an expert running coach analyzing Garmin data.
 Write 2-3 sentences explaining what happened in this run — be specific about pace, cadence, HR, and splits.
@@ -56,11 +58,15 @@ def _build_context(activity: Activity, analysis: dict[str, Any]) -> str:
         {
             "name": activity.name,
             "date": activity.started_at.isoformat(),
-            "distance_km": (activity.distance_m or 0) / 1000,
+            "distance_mi": (activity.distance_m or 0) / METERS_PER_MILE,
             "duration_min": (activity.duration_s or 0) / 60,
             "avg_hr": activity.avg_hr,
             "avg_cadence": activity.avg_cadence,
-            "avg_pace_s_per_km": activity.avg_pace_s_per_km,
+            "avg_pace_s_per_mi": (
+                activity.avg_pace_s_per_km / 0.621371
+                if activity.avg_pace_s_per_km
+                else None
+            ),
             "temperature_c": activity.temperature_c,
             "analysis": analysis,
             "summary": activity.summary_text,
@@ -70,7 +76,10 @@ def _build_context(activity: Activity, analysis: dict[str, Any]) -> str:
 
 
 def _fallback_explanation(activity: Activity, analysis: dict[str, Any]) -> str:
-    parts = [f"On {activity.started_at.strftime('%b %d')}, you covered {(activity.distance_m or 0)/1000:.1f} km."]
+    parts = [
+        f"On {activity.started_at.strftime('%b %d')}, "
+        f"you covered {(activity.distance_m or 0) / METERS_PER_MILE:.1f} mi."
+    ]
     if analysis.get("pace_fade_mile"):
         parts.append(
             f"Your pace dropped significantly after mile {analysis['pace_fade_mile']} "

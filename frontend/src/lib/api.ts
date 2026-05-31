@@ -4,6 +4,9 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ??
   (typeof window !== "undefined" ? "" : "http://127.0.0.1:8001");
 
+const METERS_PER_MILE = 1609.344;
+const KM_TO_MILES = 0.621371;
+
 async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -254,12 +257,26 @@ export async function uploadFile(file: File) {
 
 export function formatPace(secPerKm: number | null): string {
   if (!secPerKm) return "—";
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.round(secPerKm % 60);
-  return `${m}:${s.toString().padStart(2, "0")}/km`;
+  const secPerMile = secPerKm / KM_TO_MILES;
+  const m = Math.floor(secPerMile / 60);
+  const s = Math.round(secPerMile % 60);
+  return `${m}:${s.toString().padStart(2, "0")}/mi`;
 }
 
 export function formatDistance(m: number | null): string {
   if (!m) return "—";
-  return `${(m / 1000).toFixed(1)} km`;
+  return `${(m / METERS_PER_MILE).toFixed(1)} mi`;
+}
+
+export function formatKmAsMiles(km: number | null | undefined): string {
+  if (km == null) return "—";
+  return `${(km * KM_TO_MILES).toFixed(1)} mi`;
+}
+
+export function kmToMiles(km: number): number {
+  return km * KM_TO_MILES;
+}
+
+export function secPerKmToMinPerMile(secPerKm: number): number {
+  return secPerKm / KM_TO_MILES / 60;
 }

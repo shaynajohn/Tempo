@@ -8,6 +8,7 @@ import {
   getInsights,
   getTrends,
   getReadiness,
+  formatKmAsMiles,
   type DashboardStats,
   type FatigueData,
   type Pattern,
@@ -92,7 +93,7 @@ export function Dashboard() {
         <StatCard label="Activities" value={String(stats.total_activities)} />
         <StatCard
           label="Total distance"
-          value={`${stats.total_distance_km.toFixed(0)} km`}
+          value={formatKmAsMiles(stats.total_distance_km)}
         />
         <StatCard
           label="Fatigue score"

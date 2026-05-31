@@ -24,6 +24,8 @@ TARGETS = [
     TargetDistance("half", "Half marathon", 21097.5),
     TargetDistance("marathon", "Marathon", 42195),
 ]
+METERS_PER_MILE = 1609.344
+KM_TO_MILES = 0.621371
 
 
 async def compute_performance(db: AsyncSession) -> dict[str, Any]:
@@ -129,13 +131,13 @@ def _activity_summary(activity: Activity) -> dict[str, Any]:
 
 
 def _summary(source: Activity, fastest: Activity, longest: Activity) -> str:
-    source_km = (source.distance_m or 0) / 1000
+    source_mi = (source.distance_m or 0) / METERS_PER_MILE
     fastest_pace = (fastest.duration_s or 0) / ((fastest.distance_m or 1) / 1000)
     return (
         f"Your projections are based on {source.name or 'your strongest run'} "
-        f"({source_km:.1f} km). Fastest average pace is "
+        f"({source_mi:.1f} mi). Fastest average pace is "
         f"{_format_pace(fastest_pace)}, and your longest imported run is "
-        f"{(longest.distance_m or 0) / 1000:.1f} km."
+        f"{(longest.distance_m or 0) / METERS_PER_MILE:.1f} mi."
     )
 
 
@@ -149,8 +151,9 @@ def _format_duration(seconds: float) -> str:
 
 
 def _format_pace(seconds: float) -> str:
-    minutes, secs = divmod(int(round(seconds)), 60)
-    return f"{minutes}:{secs:02d}/km"
+    sec_per_mile = seconds / KM_TO_MILES
+    minutes, secs = divmod(int(round(sec_per_mile)), 60)
+    return f"{minutes}:{secs:02d}/mi"
 
 
 def _iso(value: datetime) -> str:

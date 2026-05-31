@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { secPerKmToMinPerMile } from "@/lib/api";
 
 export interface Split {
   distance_m?: number;
@@ -20,15 +21,15 @@ export interface Split {
   avg_pace_s_per_km?: number;
 }
 
-function paceToMinKm(secPerKm: number): number {
-  return secPerKm / 60;
+function paceToMinMile(secPerKm: number): number {
+  return secPerKmToMinPerMile(secPerKm);
 }
 
 export function SplitCharts({ splits }: { splits: Split[] }) {
   const data = splits
     .map((s, i) => ({
       split: i + 1,
-      pace: s.avg_pace_s_per_km ? paceToMinKm(s.avg_pace_s_per_km) : null,
+      pace: s.avg_pace_s_per_km ? paceToMinMile(s.avg_pace_s_per_km) : null,
       hr: s.avg_hr ?? null,
       cadence: s.avg_cadence ?? null,
     }))
@@ -45,7 +46,7 @@ export function SplitCharts({ splits }: { splits: Split[] }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 text-sm font-medium text-tempo-muted">Pace by split (min/km)</h3>
+        <h3 className="mb-3 text-sm font-medium text-tempo-muted">Pace by split (min/mi)</h3>
         <ResponsiveContainer width="100%" height={200}>
           <ComposedChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e2a36" />
@@ -53,7 +54,7 @@ export function SplitCharts({ splits }: { splits: Split[] }) {
             <YAxis stroke="#8b9aab" fontSize={11} domain={["auto", "auto"]} />
             <Tooltip
               contentStyle={{ background: "#121a22", border: "1px solid #1e2a36", borderRadius: 8 }}
-              formatter={(v: number) => [`${v.toFixed(2)} min/km`, "Pace"]}
+              formatter={(v: number) => [`${v.toFixed(2)} min/mi`, "Pace"]}
             />
             <Bar dataKey="pace" fill="#3dd6c6" radius={[4, 4, 0, 0]} />
           </ComposedChart>

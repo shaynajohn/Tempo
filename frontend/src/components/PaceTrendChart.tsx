@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { secPerKmToMinPerMile } from "@/lib/api";
 
 export function PaceTrendChart({
   data,
@@ -25,7 +26,7 @@ export function PaceTrendChart({
   const chartData = data.map((d) => ({
     ...d,
     label: d.date.slice(5),
-    paceMin: d.pace / 60,
+    paceMin: secPerKmToMinPerMile(d.pace),
   }));
 
   return (
@@ -40,7 +41,7 @@ export function PaceTrendChart({
           formatter={(v: number) => {
             const m = Math.floor(v);
             const s = Math.round((v - m) * 60);
-            return [`${m}:${s.toString().padStart(2, "0")}/km`, "Pace"];
+            return [`${m}:${s.toString().padStart(2, "0")}/mi`, "Pace"];
           }}
         />
         <Line

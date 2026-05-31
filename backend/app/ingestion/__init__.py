@@ -1,3 +1,1 @@
-from app.ingestion.pipeline import ingest_file
-
-__all__ = ["ingest_file"]
+"""Garmin ingestion parsers and persistence helpers."""

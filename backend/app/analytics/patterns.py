@@ -10,6 +10,8 @@ from app.models.activity import Activity
 from app.models.daily_metric import DailyMetric
 from app.schemas.analytics import PatternOut
 
+KM_TO_MILES = 0.621371
+
 
 async def discover_patterns(db: AsyncSession) -> list[PatternOut]:
     activities = (
@@ -60,16 +62,21 @@ def _mileage_sweet_spot(activities: list[Activity]) -> list[PatternOut]:
     by_bin = weekly.groupby("vol_bin", observed=True)["pace"].mean()
     best_bin = by_bin.idxmin()
     low, high = best_bin.left, best_bin.right
+    low_mi, high_mi = low * KM_TO_MILES, high * KM_TO_MILES
 
     return [
         PatternOut(
             pattern_type="mileage_sweet_spot",
             title="Ideal weekly mileage range",
             description=(
-                f"Your fastest average paces cluster around {low:.0f}–{high:.0f} km/week. "
+                f"Your fastest average paces cluster around {low_mi:.0f}–{high_mi:.0f} mi/week. "
                 "Volume above this range may correlate with slower efforts."
             ),
-            evidence={"km_low": float(low), "km_high": float(high), "weeks_analyzed": len(weekly)},
+            evidence={
+                "mi_low": float(low_mi),
+                "mi_high": float(high_mi),
+                "weeks_analyzed": len(weekly),
+            },
             confidence=min(0.85, 0.5 + len(weekly) * 0.05),
         )
     ]
@@ -121,15 +128,17 @@ def _temperature_performance(activities: list[Activity]) -> list[PatternOut]:
 
     cool_avg, warm_avg = np.mean(cool), np.mean(warm)
     if cool_avg < warm_avg * 0.97:
+        cool_mi = cool_avg / KM_TO_MILES
+        warm_mi = warm_avg / KM_TO_MILES
         return [
             PatternOut(
                 pattern_type="conditions",
                 title="Cool-weather advantage",
                 description=(
                     "Your strongest performances tend to occur below ~65°F (18°C). "
-                    f"Cool runs average {cool_avg:.0f}s/km vs {warm_avg:.0f}s/km in heat."
+                    f"Cool runs average {cool_mi:.0f}s/mi vs {warm_mi:.0f}s/mi in heat."
                 ),
-                evidence={"cool_pace": float(cool_avg), "warm_pace": float(warm_avg)},
+                evidence={"cool_pace_s_per_mi": float(cool_mi), "warm_pace_s_per_mi": float(warm_mi)},
                 confidence=0.75,
             )
         ]

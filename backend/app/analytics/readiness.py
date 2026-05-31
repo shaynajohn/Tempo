@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.activity import Activity
 from app.models.daily_metric import DailyMetric
 
+KM_TO_MILES = 0.621371
+
 
 async def compute_readiness(db: AsyncSession) -> dict[str, Any]:
     metrics = (
@@ -186,11 +188,16 @@ def _score_training_load(
             factors,
             "Volume spike",
             "negative",
-            f"{last_7:.1f} km this week vs {baseline_week:.1f} km baseline",
+            f"{last_7 * KM_TO_MILES:.1f} mi this week vs {baseline_week * KM_TO_MILES:.1f} mi baseline",
         )
     elif baseline_week and last_7 < baseline_week * 0.6:
         delta += 4
-        _factor(factors, "Reduced load", "positive", f"{last_7:.1f} km last 7 days")
+        _factor(
+            factors,
+            "Reduced load",
+            "positive",
+            f"{last_7 * KM_TO_MILES:.1f} mi last 7 days",
+        )
 
     if days_since_run is not None and days_since_run >= 2:
         delta += 4

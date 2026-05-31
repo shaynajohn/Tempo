@@ -1,17 +1,21 @@
 from app.ingestion.types import ParsedActivity
 
+METERS_PER_MILE = 1609.344
+KM_TO_MILES = 0.621371
+
 
 def format_pace(pace_s_per_km: float | None) -> str:
     if not pace_s_per_km:
         return "N/A"
-    m, s = divmod(int(pace_s_per_km), 60)
-    return f"{m}:{s:02d}/km"
+    sec_per_mile = pace_s_per_km / KM_TO_MILES
+    m, s = divmod(int(sec_per_mile), 60)
+    return f"{m}:{s:02d}/mi"
 
 
 def format_distance(m: float | None) -> str:
     if not m:
         return "N/A"
-    return f"{m / 1000:.2f} km"
+    return f"{m / METERS_PER_MILE:.2f} mi"
 
 
 def build_activity_summary(p: ParsedActivity) -> str:

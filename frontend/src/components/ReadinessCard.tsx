@@ -1,4 +1,4 @@
-import type { ReadinessData } from "@/lib/api";
+import { formatKmAsMiles, type ReadinessData } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 const ringColor: Record<ReadinessData["level"], string> = {
@@ -67,7 +67,7 @@ export function ReadinessCard({ readiness }: { readiness: ReadinessData }) {
           label="7-day volume"
           value={
             readiness.training.last_7_days_km != null
-              ? `${readiness.training.last_7_days_km.toFixed(1)} km`
+              ? formatKmAsMiles(readiness.training.last_7_days_km)
               : "—"
           }
         />
