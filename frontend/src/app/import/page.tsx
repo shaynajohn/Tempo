@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { uploadFile, importGarminExport } from "@/lib/api";
+import { useEffect, useState } from "react";
+import {
+  getLibraryStatus,
+  uploadFile,
+  importGarminExport,
+  type LibraryStatus,
+} from "@/lib/api";
+import { DataLibraryCard } from "@/components/DataLibraryCard";
 
 const DEFAULT_EXPORT_PATH =
   "/Users/shayna/Downloads/5d4f6607-507c-47de-b6f4-6218de6fcc99_1/DI_CONNECT";
@@ -10,6 +16,19 @@ export default function ImportPage() {
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [exportPath, setExportPath] = useState(DEFAULT_EXPORT_PATH);
+  const [libraryStatus, setLibraryStatus] = useState<LibraryStatus | null>(null);
+
+  async function refreshLibraryStatus() {
+    try {
+      setLibraryStatus(await getLibraryStatus());
+    } catch {
+      // The main dashboard already shows API connection errors. Keep import simple.
+    }
+  }
+
+  useEffect(() => {
+    refreshLibraryStatus();
+  }, []);
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -24,6 +43,7 @@ export default function ImportPage() {
       if (result.errors?.length) {
         setStatus((s) => `${s} ${result.errors.join(" ")}`);
       }
+      refreshLibraryStatus();
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Upload failed");
     } finally {
@@ -42,6 +62,7 @@ export default function ImportPage() {
       if (result.errors?.length) {
         setStatus((s) => `${s} Notes: ${result.errors.join(" ")}`);
       }
+      refreshLibraryStatus();
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Import failed");
     } finally {
@@ -57,6 +78,8 @@ export default function ImportPage() {
           Use your full export folder for activities, sleep, and stress — or upload a single JSON file.
         </p>
       </header>
+
+      {libraryStatus && <DataLibraryCard status={libraryStatus} />}
 
       <section className="rounded-xl border border-tempo-accent/30 bg-tempo-accent/5 p-5">
         <h2 className="font-medium text-tempo-accent">Full Garmin export (recommended)</h2>

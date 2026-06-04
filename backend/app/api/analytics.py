@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ai.agents.graph import run_coaching_pipeline
 from app.analytics.fatigue import compute_fatigue
+from app.analytics.library import compute_library_status
 from app.analytics.patterns import discover_patterns
 from app.analytics.performance import compute_performance
 from app.analytics.readiness import compute_readiness
@@ -36,6 +37,11 @@ async def dashboard_stats(db: AsyncSession = Depends(get_db)) -> DashboardStats:
         recent_fatigue_score=fatigue.current_score if fatigue.trend else None,
         recent_insights=insight_count,
     )
+
+
+@router.get("/library")
+async def library_status(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
+    return await compute_library_status(db)
 
 
 @router.get("/fatigue", response_model=FatigueOut)

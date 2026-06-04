@@ -8,6 +8,7 @@ import {
   getInsights,
   getTrends,
   getReadiness,
+  getLibraryStatus,
   formatKmAsMiles,
   type DashboardStats,
   type FatigueData,
@@ -15,11 +16,13 @@ import {
   type Insight,
   type TrendsData,
   type ReadinessData,
+  type LibraryStatus,
 } from "@/lib/api";
 import { StatCard } from "./StatCard";
 import { FatigueChart } from "./FatigueChart";
 import { PatternCard } from "./PatternCard";
 import { CoachingReport } from "./CoachingReport";
+import { DataLibraryCard } from "./DataLibraryCard";
 import { VolumeChart } from "./VolumeChart";
 import { PaceTrendChart, PaceTrendLinks } from "./PaceTrendChart";
 import { ReadinessCard } from "./ReadinessCard";
@@ -33,6 +36,7 @@ export function Dashboard() {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [trends, setTrends] = useState<TrendsData | null>(null);
   const [readiness, setReadiness] = useState<ReadinessData | null>(null);
+  const [libraryStatus, setLibraryStatus] = useState<LibraryStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,14 +47,16 @@ export function Dashboard() {
       getInsights(),
       getTrends(),
       getReadiness(),
+      getLibraryStatus(),
     ])
-      .then(([s, f, p, i, t, r]) => {
+      .then(([s, f, p, i, t, r, library]) => {
         setStats(s);
         setFatigue(f);
         setPatterns(p.filter((x) => x.pattern_type !== "insufficient_data"));
         setInsights(i.slice(0, 3));
         setTrends(t);
         setReadiness(r);
+        setLibraryStatus(library);
       })
       .catch((e) => setError(e.message));
   }, []);
@@ -104,6 +110,8 @@ export function Dashboard() {
       </div>
 
       {readiness && <ReadinessCard readiness={readiness} />}
+
+      {libraryStatus && <DataLibraryCard status={libraryStatus} />}
 
       {stats.total_activities > 0 && (
         <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">

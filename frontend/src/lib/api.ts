@@ -27,6 +27,20 @@ export interface DashboardStats {
   recent_insights: number;
 }
 
+export interface LibraryStatus {
+  activity_count: number;
+  wellness_count: number;
+  first_activity_date: string | null;
+  latest_activity_date: string | null;
+  first_wellness_date: string | null;
+  latest_wellness_date: string | null;
+  latest_data_date: string | null;
+  days_since_latest: number | null;
+  freshness: "empty" | "fresh" | "aging" | "stale";
+  needs_import: boolean;
+  summary: string;
+}
+
 export interface Split {
   distance_m?: number;
   duration_s?: number;
@@ -171,6 +185,10 @@ export interface SearchResult {
 
 export function getDashboard() {
   return fetchApi<DashboardStats>("/api/v1/analytics/dashboard");
+}
+
+export function getLibraryStatus() {
+  return fetchApi<LibraryStatus>("/api/v1/analytics/library");
 }
 
 export function getActivities(limit = 50) {
