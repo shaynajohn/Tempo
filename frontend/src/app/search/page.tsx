@@ -42,26 +42,27 @@ export default function SearchPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-semibold">Semantic search</h1>
-        <p className="mt-1 text-tempo-muted">
+      <header className="premium-card p-6">
+        <p className="eyebrow">Workout Memory</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">Semantic search</h1>
+        <p className="mt-2 max-w-2xl text-tempo-muted">
           RAG over workout summaries — find similar runs in natural language.
         </p>
       </header>
 
-      <div className="flex gap-2">
+      <div className="premium-card flex gap-2 p-2">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder="Find runs similar to my best tempo runs…"
-          className="flex-1 rounded-xl border border-tempo-border bg-tempo-surface px-4 py-3 text-sm outline-none focus:border-tempo-accent"
+          className="flex-1 rounded-xl border border-transparent bg-black/20 px-4 py-3 text-sm outline-none transition focus:border-tempo-accent/50"
         />
         <button
           onClick={() => handleSearch()}
           disabled={loading}
-          className="rounded-xl bg-tempo-accent px-5 py-3 text-sm font-medium text-tempo-bg hover:opacity-90 disabled:opacity-50"
+          className="rounded-xl bg-tempo-accent px-5 py-3 text-sm font-medium text-tempo-bg shadow-lg shadow-tempo-accent/15 hover:opacity-90 disabled:opacity-50"
         >
           {loading ? "…" : "Search"}
         </button>
@@ -75,7 +76,7 @@ export default function SearchPage() {
               setQuery(s);
               handleSearch(s);
             }}
-            className="rounded-full border border-tempo-border px-3 py-1 text-xs text-tempo-muted hover:border-tempo-accent hover:text-white"
+            className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-tempo-muted backdrop-blur transition hover:border-tempo-accent/50 hover:text-white"
           >
             {s}
           </button>
@@ -86,7 +87,7 @@ export default function SearchPage() {
         {results.map((r) => (
           <article
             key={r.activity_id}
-            className="rounded-xl border border-tempo-border bg-tempo-surface p-5"
+            className="premium-card p-5"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -97,7 +98,7 @@ export default function SearchPage() {
                 </p>
                 <p className="mt-2 text-sm text-tempo-muted">{r.content}</p>
               </div>
-              <span className="shrink-0 rounded-full bg-tempo-accent/10 px-2 py-0.5 text-xs text-tempo-accent">
+              <span className="shrink-0 rounded-full border border-tempo-accent/20 bg-tempo-accent/10 px-2 py-0.5 text-xs text-tempo-accent">
                 {(r.similarity * 100).toFixed(0)}% match
               </span>
             </div>

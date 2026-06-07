@@ -11,11 +11,14 @@ const tone: Record<LibraryStatus["freshness"], string> = {
 
 export function DataLibraryCard({ status }: { status: LibraryStatus }) {
   return (
-    <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
+    <section className="premium-card p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-medium">Data library</h2>
+            <div>
+              <p className="eyebrow">Library</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight">Data freshness</h2>
+            </div>
             <span
               className={cn(
                 "rounded-full border px-2 py-0.5 text-xs capitalize",
@@ -55,7 +58,7 @@ export function DataLibraryCard({ status }: { status: LibraryStatus }) {
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-tempo-border bg-tempo-bg/40 px-3 py-2">
+    <div className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
       <p className="text-xs text-tempo-muted">{label}</p>
       <p className="mt-0.5 font-medium tabular-nums">{value}</p>
     </div>

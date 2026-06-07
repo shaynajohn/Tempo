@@ -8,15 +8,26 @@ const ringColor: Record<ReadinessData["level"], string> = {
   unknown: "border-tempo-border text-tempo-muted",
 };
 
-export function ReadinessCard({ readiness }: { readiness: ReadinessData }) {
+export function ReadinessCard({
+  readiness,
+  isHistorical = false,
+}: {
+  readiness: ReadinessData;
+  isHistorical?: boolean;
+}) {
   const topFactors = readiness.factors.slice(0, 4);
+  const scoreGradient = `conic-gradient(from 180deg, rgba(61,214,198,0.95) ${readiness.score * 3.6}deg, rgba(255,255,255,0.08) 0deg)`;
 
   return (
-    <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
+    <section className="premium-card p-6">
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm text-tempo-muted">Today readiness</p>
-          <h2 className="mt-1 text-xl font-semibold">{readiness.recommendation}</h2>
+          <p className="eyebrow">
+            {isHistorical ? "Latest Readiness Snapshot" : "Today Readiness"}
+          </p>
+          <h2 className="mt-3 max-w-2xl text-2xl font-semibold leading-tight tracking-tight">
+            {readiness.recommendation}
+          </h2>
           {readiness.latest_metric_date && (
             <p className="mt-2 text-xs text-tempo-muted">
               Based on latest wellness data from{" "}
@@ -27,13 +38,16 @@ export function ReadinessCard({ readiness }: { readiness: ReadinessData }) {
 
         <div
           className={cn(
-            "flex h-28 w-28 shrink-0 items-center justify-center rounded-full border-4",
+            "soft-pulse flex h-32 w-32 shrink-0 items-center justify-center rounded-full p-1",
             ringColor[readiness.level]
           )}
+          style={{ background: scoreGradient }}
         >
-          <div className="text-center">
-            <p className="text-3xl font-semibold tabular-nums">{readiness.score}</p>
-            <p className="text-xs capitalize">{readiness.level}</p>
+          <div className="flex h-full w-full items-center justify-center rounded-full bg-tempo-bg text-center shadow-inner shadow-black/60">
+            <div>
+              <p className="text-4xl font-semibold tabular-nums">{readiness.score}</p>
+              <p className="text-xs uppercase tracking-[0.2em]">{readiness.level}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -98,7 +112,7 @@ export function ReadinessCard({ readiness }: { readiness: ReadinessData }) {
 
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-tempo-border bg-tempo-bg/40 px-3 py-2">
+    <div className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
       <p className="text-xs text-tempo-muted">{label}</p>
       <p className="mt-0.5 font-medium tabular-nums">{value}</p>
     </div>

@@ -71,17 +71,18 @@ export default function ImportPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-6">
-      <header>
-        <h1 className="text-3xl font-semibold">Import Garmin data</h1>
-        <p className="mt-2 text-sm text-tempo-muted">
+    <div className="mx-auto max-w-4xl space-y-6">
+      <header className="premium-card p-6">
+        <p className="eyebrow">Data Pipeline</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">Import Garmin data</h1>
+        <p className="mt-2 max-w-2xl text-sm text-tempo-muted">
           Use your full export folder for activities, sleep, and stress — or upload a single JSON file.
         </p>
       </header>
 
       {libraryStatus && <DataLibraryCard status={libraryStatus} />}
 
-      <section className="rounded-xl border border-tempo-accent/30 bg-tempo-accent/5 p-5">
+      <section className="premium-card p-5">
         <h2 className="font-medium text-tempo-accent">Full Garmin export (recommended)</h2>
         <p className="mt-1 text-xs text-tempo-muted">
           Imports runs from summarizedActivities + wellness from UDS & sleep files.
@@ -91,18 +92,18 @@ export default function ImportPage() {
           type="text"
           value={exportPath}
           onChange={(e) => setExportPath(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-tempo-border bg-tempo-bg px-3 py-2 text-xs"
+          className="mt-1 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs outline-none transition focus:border-tempo-accent/50"
         />
         <button
           onClick={handleFullExport}
           disabled={loading}
-          className="mt-3 w-full rounded-lg bg-tempo-accent py-2.5 text-sm font-medium text-tempo-bg hover:opacity-90 disabled:opacity-50"
+          className="mt-3 w-full rounded-xl bg-tempo-accent py-2.5 text-sm font-medium text-tempo-bg shadow-lg shadow-tempo-accent/15 hover:opacity-90 disabled:opacity-50"
         >
           {loading ? "Importing…" : "Import full export"}
         </button>
       </section>
 
-      <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-tempo-border bg-tempo-surface p-10 transition hover:border-tempo-accent/50">
+      <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/15 bg-white/[0.04] p-10 shadow-2xl shadow-black/20 backdrop-blur transition hover:border-tempo-accent/50 hover:bg-tempo-accent/5">
         <span className="text-3xl">📁</span>
         <span className="mt-3 font-medium">
           {loading ? "Working…" : "Or upload a single file"}

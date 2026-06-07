@@ -18,16 +18,17 @@ export default function ActivitiesPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-3xl font-semibold">Activities</h1>
-        <p className="mt-1 text-tempo-muted">
+      <header className="premium-card p-6">
+        <p className="eyebrow">Workout Log</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">Activities</h1>
+        <p className="mt-2 text-tempo-muted">
           Click a run for splits, charts, and AI explanation.
         </p>
       </header>
 
-      <div className="overflow-hidden rounded-xl border border-tempo-border">
+      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/20 backdrop-blur">
         <table className="w-full text-sm">
-          <thead className="bg-tempo-surface text-left text-tempo-muted">
+          <thead className="bg-white/[0.04] text-left text-tempo-muted">
             <tr>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Name</th>
@@ -39,7 +40,7 @@ export default function ActivitiesPage() {
           </thead>
           <tbody>
             {activities.map((a) => (
-              <tr key={a.id} className="border-t border-tempo-border hover:bg-tempo-surface/50">
+              <tr key={a.id} className="border-t border-white/10 transition hover:bg-white/[0.05]">
                 <td className="px-4 py-3 tabular-nums">
                   {new Date(a.started_at).toLocaleDateString()}
                 </td>

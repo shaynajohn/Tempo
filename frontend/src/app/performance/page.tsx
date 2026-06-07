@@ -51,15 +51,17 @@ export default function PerformancePage() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-3xl font-semibold tracking-tight">Performance</h1>
-        <p className="mt-1 text-tempo-muted">
+      <header className="premium-card p-6">
+        <p className="eyebrow">Race Engine</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight">Performance</h1>
+        <p className="mt-2 max-w-2xl text-tempo-muted">
           Personal-best estimates and race projections from your imported runs.
         </p>
       </header>
 
-      <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-        <h2 className="text-lg font-medium">Race projections</h2>
+      <section className="premium-card p-6">
+        <p className="eyebrow">Projection Model</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight">Race projections</h2>
         <p className="mt-1 text-sm text-tempo-muted">{data.summary}</p>
         <div className="mt-6">
           <ProjectionChart data={chartData} />
@@ -67,8 +69,9 @@ export default function PerformancePage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-          <h2 className="mb-4 text-lg font-medium">Projected race times</h2>
+        <section className="premium-card p-6">
+          <p className="eyebrow">Targets</p>
+          <h2 className="mb-4 mt-2 text-xl font-semibold">Projected race times</h2>
           <div className="space-y-3">
             {data.race_projections.map((projection) => (
               <PerformanceRow key={projection.distance_key} mark={projection} />
@@ -76,8 +79,9 @@ export default function PerformancePage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-          <h2 className="mb-4 text-lg font-medium">Estimated personal bests</h2>
+        <section className="premium-card p-6">
+          <p className="eyebrow">Benchmarks</p>
+          <h2 className="mb-4 mt-2 text-xl font-semibold">Estimated personal bests</h2>
           {data.personal_bests.length ? (
             <div className="space-y-3">
               {data.personal_bests.map((pb) => (
@@ -141,7 +145,7 @@ function ProjectionChart({
 function PerformanceRow({ mark }: { mark: PerformanceMark }) {
   const activity = mark.activity ?? mark.source_activity;
   return (
-    <div className="rounded-lg border border-tempo-border bg-tempo-bg/40 p-4">
+    <div className="rounded-xl border border-white/10 bg-black/20 p-4 transition hover:border-tempo-accent/30">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-medium">{mark.distance_label}</p>
@@ -180,9 +184,9 @@ function RunCard({
   return (
     <Link
       href={`/activities/${activity.id}`}
-      className="rounded-xl border border-tempo-border bg-tempo-surface p-5 transition hover:border-tempo-accent/60"
+      className="premium-card p-5 transition hover:-translate-y-0.5 hover:border-tempo-accent/60"
     >
-      <p className="text-xs text-tempo-muted">{title}</p>
+      <p className="text-xs uppercase tracking-[0.18em] text-tempo-muted">{title}</p>
       <p className="mt-1 font-medium">{activity.name}</p>
       <p className="mt-2 text-sm text-tempo-muted">
         {formatDistance(activity.distance_m)} · {formatPace(activity.pace_s_per_km)}

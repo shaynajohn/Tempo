@@ -9,6 +9,7 @@ import {
   getTrends,
   getReadiness,
   getLibraryStatus,
+  getActivities,
   formatKmAsMiles,
   type DashboardStats,
   type FatigueData,
@@ -17,15 +18,14 @@ import {
   type TrendsData,
   type ReadinessData,
   type LibraryStatus,
+  type Activity,
 } from "@/lib/api";
-import { StatCard } from "./StatCard";
 import { FatigueChart } from "./FatigueChart";
 import { PatternCard } from "./PatternCard";
 import { CoachingReport } from "./CoachingReport";
-import { DataLibraryCard } from "./DataLibraryCard";
+import { CoachBriefHero } from "./CoachBriefHero";
 import { VolumeChart } from "./VolumeChart";
 import { PaceTrendChart, PaceTrendLinks } from "./PaceTrendChart";
-import { ReadinessCard } from "./ReadinessCard";
 import { WellnessChart } from "./WellnessChart";
 import { riskColor } from "@/lib/utils";
 
@@ -37,6 +37,7 @@ export function Dashboard() {
   const [trends, setTrends] = useState<TrendsData | null>(null);
   const [readiness, setReadiness] = useState<ReadinessData | null>(null);
   const [libraryStatus, setLibraryStatus] = useState<LibraryStatus | null>(null);
+  const [latestActivity, setLatestActivity] = useState<Activity | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,8 +49,9 @@ export function Dashboard() {
       getTrends(),
       getReadiness(),
       getLibraryStatus(),
+      getActivities(1),
     ])
-      .then(([s, f, p, i, t, r, library]) => {
+      .then(([s, f, p, i, t, r, library, latest]) => {
         setStats(s);
         setFatigue(f);
         setPatterns(p.filter((x) => x.pattern_type !== "insufficient_data"));
@@ -57,6 +59,7 @@ export function Dashboard() {
         setTrends(t);
         setReadiness(r);
         setLibraryStatus(library);
+        setLatestActivity(latest.items[0] ?? null);
       })
       .catch((e) => setError(e.message));
   }, []);
@@ -83,56 +86,56 @@ export function Dashboard() {
   }
 
   if (!stats) {
-    return <p className="text-tempo-muted">Loading…</p>;
+    return (
+      <div className="premium-card p-8">
+        <p className="eyebrow">Loading</p>
+        <p className="mt-2 text-tempo-muted">Preparing your training command center...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="mt-1 text-tempo-muted">
-          Recovery, patterns, and coaching insights from your Garmin data.
-        </p>
-      </header>
+    <div className="space-y-10">
+      <CoachBriefHero
+        readiness={readiness}
+        fatigue={fatigue}
+        libraryStatus={libraryStatus}
+        latestActivity={latestActivity}
+      />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Activities" value={String(stats.total_activities)} />
-        <StatCard
-          label="Total distance"
-          value={formatKmAsMiles(stats.total_distance_km)}
-        />
-        <StatCard
-          label="Fatigue score"
-          value={fatigue ? String(Math.round(fatigue.current_score)) : "—"}
-          sub={fatigue ? fatigue.risk_level : undefined}
-        />
-        <StatCard label="Insights" value={String(stats.recent_insights)} />
-      </div>
-
-      {readiness && <ReadinessCard readiness={readiness} />}
-
-      {libraryStatus && <DataLibraryCard status={libraryStatus} />}
+      <SignalStrip
+        stats={stats}
+        fatigue={fatigue}
+        readiness={readiness}
+        libraryStatus={libraryStatus}
+      />
 
       {stats.total_activities > 0 && (
-        <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-          <h2 className="text-lg font-medium">Coaching report</h2>
-          <p className="mt-1 text-xs text-tempo-muted">
-            AI synthesis of fatigue, patterns, and training load
-          </p>
-          <div className="mt-4">
+        <details className="premium-card group p-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+            <div>
+              <p className="eyebrow">More Context</p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight">AI coaching notes</h2>
+            </div>
+            <span className="pill group-open:hidden">Show</span>
+            <span className="pill hidden group-open:inline-flex">Hide</span>
+          </summary>
+          <div className="mt-5 border-t border-white/10 pt-5">
             <CoachingReport />
           </div>
-        </section>
+        </details>
       )}
 
       {trends && stats.total_activities > 0 && (
         <div className="grid gap-6 lg:grid-cols-2">
-          <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-            <h2 className="mb-4 text-lg font-medium">Weekly volume</h2>
+          <section className="premium-card p-6">
+            <p className="eyebrow">Load</p>
+            <h2 className="mb-4 mt-2 text-xl font-semibold">Weekly volume</h2>
             <VolumeChart data={trends.weekly_volume} />
           </section>
-          <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-            <h2 className="mb-4 text-lg font-medium">Pace trend</h2>
+          <section className="premium-card p-6">
+            <p className="eyebrow">Speed</p>
+            <h2 className="mb-4 mt-2 text-xl font-semibold">Pace trend</h2>
             <PaceTrendChart data={trends.pace_trend} />
             <PaceTrendLinks data={trends.pace_trend} />
           </section>
@@ -140,18 +143,22 @@ export function Dashboard() {
       )}
 
       {trends && trends.wellness.length > 0 && (
-        <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
-          <h2 className="mb-4 text-lg font-medium">Sleep & resting HR</h2>
+        <section className="premium-card p-6">
+          <p className="eyebrow">Recovery Signals</p>
+          <h2 className="mb-4 mt-2 text-xl font-semibold">Sleep & resting HR</h2>
           <WellnessChart data={trends.wellness} />
         </section>
       )}
 
       {fatigue && (
-        <section className="rounded-xl border border-tempo-border bg-tempo-surface p-6">
+        <section className="premium-card p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-medium">Fatigue & burnout risk</h2>
+            <div>
+              <p className="eyebrow">Risk Model</p>
+              <h2 className="mt-2 text-xl font-semibold">Fatigue & burnout risk</h2>
+            </div>
             <span
-              className={`text-sm font-medium capitalize ${riskColor(fatigue.risk_level)}`}
+              className={`rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-sm font-medium capitalize ${riskColor(fatigue.risk_level)}`}
             >
               {fatigue.risk_level}
             </span>
@@ -162,24 +169,34 @@ export function Dashboard() {
       )}
 
       {patterns.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-lg font-medium">Training patterns</h2>
+        <details className="group">
+          <summary className="mb-4 flex cursor-pointer list-none items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">Discovered Intelligence</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight">Training patterns</h2>
+            </div>
+            <span className="pill group-open:hidden">Show</span>
+            <span className="pill hidden group-open:inline-flex">Hide</span>
+          </summary>
           <div className="grid gap-4 md:grid-cols-2">
             {patterns.map((p) => (
               <PatternCard key={p.pattern_type + p.title} pattern={p} />
             ))}
           </div>
-        </section>
+        </details>
       )}
 
       {insights.length > 0 && (
         <section>
-          <h2 className="mb-4 text-lg font-medium">Recent insights</h2>
+          <div className="mb-4">
+            <p className="eyebrow">Memory</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">Recent insights</h2>
+          </div>
           <div className="space-y-3">
             {insights.map((i) => (
               <article
                 key={i.id}
-                className="rounded-xl border border-tempo-border bg-tempo-surface p-5"
+                className="premium-card p-5"
               >
                 <h3 className="font-medium">{i.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-tempo-muted">
@@ -205,3 +222,63 @@ export function Dashboard() {
     </div>
   );
 }
+
+function SignalStrip({
+  stats,
+  fatigue,
+  readiness,
+  libraryStatus,
+}: {
+  stats: DashboardStats;
+  fatigue: FatigueData | null;
+  readiness: ReadinessData | null;
+  libraryStatus: LibraryStatus | null;
+}) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <Signal label="Runs" value={String(stats.total_activities)} />
+      <Signal label="Miles" value={formatKmAsMiles(stats.total_distance_km)} />
+      <Signal
+        label="Readiness"
+        value={readiness ? `${readiness.score}` : "—"}
+        tone={readiness?.level === "low" ? "danger" : readiness?.level === "moderate" ? "warn" : "accent"}
+      />
+      <Signal
+        label="Data"
+        value={libraryStatus?.freshness ?? "—"}
+        tone={libraryStatus?.needs_import ? "warn" : "accent"}
+        sub={fatigue ? `${Math.round(fatigue.current_score)} fatigue` : undefined}
+      />
+    </div>
+  );
+}
+
+function Signal({
+  label,
+  value,
+  sub,
+  tone = "muted",
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  tone?: "accent" | "warn" | "danger" | "muted";
+}) {
+  const toneClass = {
+    accent: "text-tempo-accent",
+    warn: "text-tempo-warn",
+    danger: "text-tempo-danger",
+    muted: "text-white",
+  }[tone];
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3 backdrop-blur">
+      <p className="text-xs uppercase tracking-[0.16em] text-tempo-muted">{label}</p>
+      <p className={`mt-1 text-2xl font-semibold capitalize tabular-nums ${toneClass}`}>
+        {value}
+      </p>
+      {sub && <p className="mt-1 text-xs text-tempo-muted">{sub}</p>}
+    </div>
+  );
+}
+
