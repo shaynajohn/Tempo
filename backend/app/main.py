@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -7,6 +8,8 @@ from sqlalchemy import text
 from app.api import router as api_router
 from app.config import settings
 from app.db.session import engine, init_db
+from app.services.garmin_scheduler import garmin_sync_loop
+from app.services.strava_scheduler import strava_sync_loop
 
 
 @asynccontextmanager
@@ -15,8 +18,18 @@ async def lifespan(app: FastAPI):
         async with engine.begin() as conn:
             await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
     await init_db()
-    yield
-    await engine.dispose()
+
+    stop_strava_sync = asyncio.Event()
+    stop_garmin_sync = asyncio.Event()
+    strava_task = asyncio.create_task(strava_sync_loop(stop_strava_sync))
+    garmin_task = asyncio.create_task(garmin_sync_loop(stop_garmin_sync))
+    try:
+        yield
+    finally:
+        stop_strava_sync.set()
+        stop_garmin_sync.set()
+        await asyncio.gather(strava_task, garmin_task)
+        await engine.dispose()
 
 
 app = FastAPI(

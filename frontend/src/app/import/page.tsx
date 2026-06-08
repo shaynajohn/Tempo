@@ -8,6 +8,7 @@ import {
   type LibraryStatus,
 } from "@/lib/api";
 import { DataLibraryCard } from "@/components/DataLibraryCard";
+import { GarminConnectSyncCard } from "@/components/GarminConnectSyncCard";
 
 const DEFAULT_EXPORT_PATH =
   "/Users/shayna/Downloads/5d4f6607-507c-47de-b6f4-6218de6fcc99_1/DI_CONNECT";
@@ -81,6 +82,8 @@ export default function ImportPage() {
       </header>
 
       {libraryStatus && <DataLibraryCard status={libraryStatus} />}
+
+      <GarminConnectSyncCard onSynced={refreshLibraryStatus} />
 
       <section className="premium-card p-5">
         <h2 className="font-medium text-tempo-accent">Full Garmin export (recommended)</h2>

@@ -183,6 +183,41 @@ export interface SearchResult {
   similarity: number;
 }
 
+export interface StravaStatus {
+  configured: boolean;
+  auto_sync_enabled: boolean;
+  auto_sync_interval_minutes: number;
+  connected: boolean;
+  athlete_name: string | null;
+  athlete_id: number | null;
+  last_synced_at: string | null;
+  auth_url: string | null;
+}
+
+export interface StravaSyncResult {
+  connected: boolean;
+  fetched: number;
+  imported: number;
+  athlete_name?: string | null;
+  last_synced_at?: string | null;
+}
+
+export interface GarminConnectStatus {
+  configured: boolean;
+  auto_sync_enabled: boolean;
+  auto_sync_interval_minutes: number;
+  sync_limit: number;
+  last_synced_at: string | null;
+}
+
+export interface GarminConnectSyncResult {
+  configured: boolean;
+  fetched: number;
+  runs_found: number;
+  imported: number;
+  last_synced_at?: string | null;
+}
+
 export function getDashboard() {
   return fetchApi<DashboardStats>("/api/v1/analytics/dashboard");
 }
@@ -246,6 +281,30 @@ export function searchWorkouts(query: string) {
 
 export function indexWorkouts() {
   return fetchApi<{ indexed: number }>("/api/v1/search/index", {
+    method: "POST",
+  });
+}
+
+export function getStravaStatus() {
+  return fetchApi<StravaStatus>("/api/v1/strava/status");
+}
+
+export function getStravaAuthorizeUrl() {
+  return fetchApi<{ auth_url: string }>("/api/v1/strava/authorize");
+}
+
+export function syncStrava() {
+  return fetchApi<StravaSyncResult>("/api/v1/strava/sync", {
+    method: "POST",
+  });
+}
+
+export function getGarminConnectStatus() {
+  return fetchApi<GarminConnectStatus>("/api/v1/garmin-connect/status");
+}
+
+export function syncGarminConnect() {
+  return fetchApi<GarminConnectSyncResult>("/api/v1/garmin-connect/sync", {
     method: "POST",
   });
 }

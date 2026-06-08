@@ -57,7 +57,7 @@ App: http://localhost:3000
 **Full Garmin export** (activities + sleep + stress) — on **Import**, click *Import full export*, or:
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/ingest/garmin-export \
+curl -X POST http://localhost:8001/api/v1/ingest/garmin-export \
   -H "Content-Type: application/json" \
   -d '{"export_path": "/path/to/DI_CONNECT"}'
 ```
@@ -96,6 +96,34 @@ Supported formats: `.json`, `.csv` (activities). FIT support is stubbed for a la
 | `DATABASE_URL` | Async PostgreSQL URL |
 | `OPENAI_API_KEY` | Required for explanations & semantic search |
 | `NEXT_PUBLIC_API_URL` | Backend URL for frontend |
+| `GARMIN_EMAIL` | Garmin Connect email for local sync |
+| `GARMIN_PASSWORD` | Garmin Connect password for local sync |
+| `GARMIN_AUTO_SYNC` | Enables background Garmin sync while the backend is running |
+| `GARMIN_SYNC_INTERVAL_MINUTES` | Background Garmin sync interval, defaults to `60` |
+| `GARMIN_SYNC_LIMIT` | Recent Garmin activities to fetch per sync, defaults to `50` |
+
+## Garmin Connect Sync
+
+Tempo can pull recent running activities from Garmin Connect without repeatedly
+uploading exports. This uses an unofficial Garmin Connect client, so keep it for
+local/personal MVP use and keep manual export as a fallback.
+
+Add these to `backend/.env`:
+
+```bash
+GARMIN_EMAIL=you@example.com
+GARMIN_PASSWORD=your-garmin-password
+GARMIN_AUTO_SYNC=true
+GARMIN_SYNC_INTERVAL_MINUTES=60
+GARMIN_SYNC_LIMIT=50
+```
+
+Then restart the backend and open **Import → Sync Garmin**. Tempo will also sync
+in the background while the backend is running. Manual Garmin export is still
+useful for sleep, stress, Body Battery, and other wellness signals.
+
+Strava sync code is still present as an optional later path, but Strava may
+require a subscription to create API apps.
 
 ## Roadmap
 
